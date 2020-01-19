@@ -1,6 +1,6 @@
 # node-todo-list
 
-## Usage
+### Usage
 
 - add: 添加任务。例如 `node todo add 学习Node.js`
 - edit: 编辑任务。例如 `node todo edit 学习Node.js 学习JavaScript`

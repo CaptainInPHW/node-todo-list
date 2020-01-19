@@ -1,5 +1,12 @@
 # node-todo-list
 
+## Usage
+
+- add: 添加任务。例如 `node todo add 学习Node.js`
+- edit: 编辑任务。例如 `node todo edit 学习Node.js 学习JavaScript`
+- done: 完成任务。例如 `node todo done 学习Node.js`
+- delete: 删除任务。例如 `node todo delete 学习JavaScript`
+
 ### Feature
 
 - 查看任务

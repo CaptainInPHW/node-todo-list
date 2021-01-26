@@ -5,21 +5,37 @@ export interface DatabaseStructure {
   levels: Level[];
 }
 
+export type DatabaseKeys = keyof DatabaseStructure;
+
+export interface IncompleteTask {
+  name: string;
+  group?: number;
+  tags?: number[];
+  level?: number;
+  description: string | undefined;
+}
+
 export interface Task {
   id: number;
   name: string;
-  tags: number[];
+  group?: number;
+  groupName?: string;
+  tags?: number[];
+  tagName?: string;
   status: Status;
-  groupId: number;
-  createdAt: string;
-  level: number | undefined;
+  createAt: string;
+  updateAt?: string;
+  completeAt?: string;
+  remindTime?: string;
+  level?: number;
+  levelName?: string;
   description: string | undefined;
 }
 
 export enum Status {
-  Todo,
-  Done,
-  Removed
+  Todo = 2,
+  Done = 1,
+  Removed = 0
 }
 
 export interface Group {

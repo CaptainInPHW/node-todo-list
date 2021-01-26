@@ -1,19 +1,26 @@
 #!/usr/bin/env node
 
-const utils = require('./utils');
-const initial = require('./db').initial;
+// @ts-ignore
 const { program } = require('commander');
+const Database = require('./model/database');
 const packageJSON = require('../package.json');
 
-initial();
-
-program.version(packageJSON.version);
+Database.initial();
 
 program
-  .command('list')
-  .alias('ls')
-  .description('List your to-do items')
-  .option('-a, --all', 'List all items, including to-do items and completed', false)
-  .action((options: { all: boolean }) => options.all ? utils.printAllTasks() : utils.printTodoTasks());
+  .version(packageJSON.version)
+  .description('A simple command line to-do list tool.')
+  .command('add', 'Add a new item', { executableFile: 'view/add' })
+  .command('edit', 'Edit an existing item', { executableFile: 'edit' })
+  .command('show', 'Show an item', { executableFile: 'edit' })
+  .command('delete', 'Delete one of items', { executableFile: 'delete' }).alias('del')
+  .command('list', 'List to-do items', { executableFile: 'view/list' }).alias('ls')
+  // TODO: welcome
+  .action(() => program.outputHelp());
+
+// TODO: missed command
+program.on('command:*', function () {
+  program.outputHelp();
+});
 
 program.parse(process.argv);

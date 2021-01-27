@@ -1,4 +1,5 @@
 import { Task } from './interface';
+import chalk from 'chalk';
 
 function printTasks(tasks: Task[]) {
   console.log(tasks);
@@ -13,6 +14,13 @@ function printTasks(tasks: Task[]) {
 //   console.log('    - delete: 删除任务。例如 node todo delete 学习JavaScript');
 // }
 
+const Level = {
+  Low: chalk.blueBright.bold('!'),
+  High: chalk.redBright.bold('!!!'),
+  Middle: chalk.yellowBright.bold('!!')
+};
+
 module.exports = {
-  printTasks
+  printTasks,
+  Level
 };

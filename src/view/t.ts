@@ -32,7 +32,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
       if (!tags.length) {
         return logger('error', `Your tag list is empty`);
       }
-      const message = tags.map((tag: Tag) => emoji.emojify(`:label:  ${tag.name}`)).join(' ');
+      const message = tags.map((tag: Tag) => emoji.emojify(`:label: ${tag.name}`)).join(' ');
       console.log();
       console.log(message);
       console.log();
@@ -58,7 +58,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
       return logger('error', `Tag '${tagName}' already exists`);
     }
     TagController.create(tagName);
-    logger('success', `Success, you can type ${chalk.greenBright.underline('st t')} to view all tags`);
+    logger('success', `Success, you can enter ${chalk.greenBright.underline('st t')} to view all tags`);
   });
 
 program.parse(process.argv);

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 // @ts-ignore
+const chalk = require('chalk');
+// @ts-ignore
 const emoji = require('node-emoji');
 // @ts-ignore
 const inquirer = require('inquirer');

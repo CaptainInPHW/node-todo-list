@@ -1,5 +1,9 @@
 import { Task } from './interface';
-import chalk from 'chalk';
+
+// @ts-ignore
+const chalk = require('chalk');
+// @ts-ignore
+const symbols = require('log-symbols');
 
 function printTasks(tasks: Task[]) {
   console.log(tasks);
@@ -20,7 +24,14 @@ const Level = {
   Middle: chalk.yellowBright.bold('!!')
 };
 
+const logger = <T extends keyof typeof symbols>(type: T, msg: string) => {
+  console.log();
+  console.log(symbols[type], msg);
+  console.log();
+};
+
 module.exports = {
   printTasks,
-  Level
+  Level,
+  logger
 };

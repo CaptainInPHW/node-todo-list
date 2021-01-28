@@ -1,5 +1,6 @@
 import { Group, IncompleteTask, Level, Status, Tag, Task } from '../interface';
 
+//@ts-ignore
 const Database = require('../model/database');
 
 class TaskController {
@@ -26,31 +27,31 @@ class TaskController {
   }
 
   public getByStatus(status: Status): Task[] {
-    const items = Database.read('tasks') as Task[];
-    return TaskController.complement(items.filter(item => item.status === status));
+    const tasks = this.get();
+    return TaskController.complement(tasks.filter(item => item.status === status));
   }
 
   public getByTag(tag: number, all?: boolean): Task[] {
-    const items = Database.read('tasks') as Task[];
+    const tasks = this.get();
     return TaskController.complement(all
-      ? items.filter(item => item.group === tag)
-      : items.filter(item => item.group === tag && item.status === Status.Todo)
+      ? tasks.filter(item => item.group === tag)
+      : tasks.filter(item => item.group === tag && item.status === Status.Todo)
     );
   }
 
   public getByGroup(group: number, all?: boolean): Task[] {
-    const items = Database.read('tasks') as Task[];
+    const tasks = this.get();
     return TaskController.complement(all
-      ? items.filter(item => item.group === group)
-      : items.filter(item => item.group === group && item.status === Status.Todo)
+      ? tasks.filter(item => item.group === group)
+      : tasks.filter(item => item.group === group && item.status === Status.Todo)
     );
   }
 
   public getByLevel(level: number, all?: boolean): Task[] {
-    const items = Database.read('tasks') as Task[];
+    const tasks = this.get();
     return TaskController.complement(all
-      ? items.filter(item => item.level === level)
-      : items.filter(item => item.group === level && item.status === Status.Todo)
+      ? tasks.filter(item => item.level === level)
+      : tasks.filter(item => item.group === level && item.status === Status.Todo)
     );
   }
 
@@ -69,7 +70,9 @@ class TaskController {
 
   public update(task: Task) {
     task.updateAt = TaskController.getCurrentTime();
-    const tasks = this.get().filter(t => t.id !== task.id).unshift(task);
+    const tasks = this.get()
+      .filter(t => t.id !== task.id)
+      .unshift(task);
     Database.write('tasks', tasks);
   }
 
@@ -88,6 +91,5 @@ class TaskController {
     Database.write('tasks', tasks);
   }
 }
-
 
 module.exports = new TaskController();

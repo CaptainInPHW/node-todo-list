@@ -10,15 +10,14 @@ const { Command } = require('commander');
 const program = new Command();
 
 program
-  .arguments('<group_name>')
-  .description(chalk.underline.bold('Add a new group'))
-  .action((groupName: string) => {
-    console.log(groupName);
-  })
+  .option('-e, --edit', 'edit group')
   .addHelpText('after', `
 ${chalk.bgGreen.bold.italic(' Example ')}
-  $ ${chalk.greenBright('st')} add group ${chalk.bold.underline('work')}
-  $ ${chalk.greenBright('st')} add group ${chalk.bold.underline('shopping')}
-  `);
+  $ ${chalk.greenBright('st')} t
+  $ ${chalk.greenBright('st')} t -e
+  `)
+  .action((opts: unknown) => {
+    console.log(opts);
+  });
 
 program.parse(process.argv);

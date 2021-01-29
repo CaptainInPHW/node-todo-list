@@ -7,10 +7,12 @@ const packageJson = require('../../package.json');
 
 const dbPath = path.join(os.homedir(), packageJson.dbName);
 
+const initial: DatabaseStructure = { tags: [], tasks: [], groups: [] };
+
 class Database {
   initial() {
     if (!fs.existsSync(dbPath)) {
-      fs.writeFileSync(dbPath, JSON.stringify({ tags: [], tasks: [], groups: [], levels: [] } as DatabaseStructure));
+      fs.writeFileSync(dbPath, JSON.stringify(initial));
     }
   }
 

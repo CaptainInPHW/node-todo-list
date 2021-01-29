@@ -1,22 +1,50 @@
-import { Task } from './interface';
+import { Group, Tag, Task } from './interface';
 
 // @ts-ignore
 const chalk = require('chalk');
 // @ts-ignore
+const emoji = require('node-emoji');
+// @ts-ignore
 const symbols = require('log-symbols');
 
-function printTasks(tasks: Task[]) {
-  console.log(tasks);
-}
 
-// function sayHello() {
-//   console.log('欢迎使用基于 Node.js 的 Todo-List!');
-//   console.log('使用方法：');
-//   console.log('    - add: 添加任务。例如 node todo add 学习Node.js');
-//   console.log('    - edit: 编辑任务。例如 node todo edit 学习Node.js 学习JavaScript');
-//   console.log('    - done: 完成任务。例如 node todo done 学习Node.js');
-//   console.log('    - delete: 删除任务。例如 node todo delete 学习JavaScript');
-// }
+const Print = {
+  Tasks: (tasks: Task[]) => {
+    tasks.forEach((task, index) => {
+      console.log();
+      console.log(emoji.emojify(`  ${task.level ? task.level + ' ' : ''}${chalk.underline.bold(task.name)}  ${emoji.emojify(task.statusName)}`));
+      if (task.description) {
+        console.log();
+        console.log(emoji.emojify(`  ${chalk.dim(task.description)}`));
+      }
+      console.log();
+      let extra: string = '  ';
+      if (task.group) {
+        extra += emoji.emojify(`:file_folder: ${task.groupName}`);
+      }
+      if (task.tag) {
+        extra += ' ' + emoji.emojify(`:label:  ${task.tagName}`);
+      }
+      if (extra.trim()) {
+        console.log(extra);
+        console.log();
+      }
+      if (index !== tasks.length - 1) {
+        console.log('--------------------------------------------------------------------------------------------');
+      }
+    });
+  },
+  Tags: (tags: Tag[]) => {
+    console.log();
+    console.log(tags.map(t => emoji.emojify(`:label: ${t.name}`)));
+    console.log();
+  },
+  Groups: (groups: Group[]) => {
+    console.log();
+    console.log(groups.map(g => emoji.emojify(`:file_folder: ${g.name}`)));
+    console.log();
+  }
+};
 
 const Level = {
   Low: chalk.blueBright.bold('!'),
@@ -31,7 +59,7 @@ const logger = <T extends keyof typeof symbols>(type: T, msg: string) => {
 };
 
 module.exports = {
-  printTasks,
+  Print,
   Level,
   logger
 };

@@ -1,7 +1,16 @@
-import { Group, IncompleteTask, Level, Status, Tag, Task } from '../interface';
+import { Group, IncompleteTask, Status, StatusName, Tag, Task } from '../interface';
+
+// @ts-ignore
+const chalk = require('chalk');
 
 //@ts-ignore
 const Database = require('../model/database');
+
+const StatusName: StatusName = {
+  Todo: chalk.yellowBright.bold('Todo'),
+  Done: chalk.greenBright.bold('Done'),
+  Removed: chalk.gray.strikethrough('Deleted')
+};
 
 class TaskController {
   static getCurrentTime() {
@@ -10,13 +19,12 @@ class TaskController {
 
   static complement(tasks: Task[]): Task[] {
     const tags = Database.read('tags') as Tag[];
-    const levels = Database.read('levels') as Level[];
     const groups = Database.read('groups') as Group[];
     return tasks.map(task => ({
       ...task,
-      levelName: task.level ? levels.find(level => level.id === task.level)!.name : undefined,
-      groupName: task.group ? groups.find(group => group.id === task.group)!.name : undefined,
-      tagName: task.tags && task.tags.length ? task.tags.map(tagId => tags.find(tag => tag.id === tagId)!.name).join('、') : undefined
+      statusName: StatusName[Status[task.status] as keyof StatusName],
+      tagName: task.tag ? tags.find(tag => tag.id === task.tag)!.name : undefined,
+      groupName: task.group ? groups.find(group => group.id === task.group)!.name : undefined
     }));
   }
 
@@ -47,11 +55,11 @@ class TaskController {
     );
   }
 
-  public getByLevel(level: number, all?: boolean): Task[] {
+  public getByLevel(level: string, all?: boolean): Task[] {
     const tasks = this.get();
     return TaskController.complement(all
       ? tasks.filter(item => item.level === level)
-      : tasks.filter(item => item.group === level && item.status === Status.Todo)
+      : tasks.filter(item => item.level === level && item.status === Status.Todo)
     );
   }
 

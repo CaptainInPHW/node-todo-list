@@ -14,10 +14,11 @@ const program = new Command();
 // @ts-ignore
 const TagController = require('../controller/tag');
 // @ts-ignore
-const { logger } = require('../utils');
+const { logger, Print } = require('../utils');
 
 program
   .arguments('[tag_name]')
+  .description(emoji.emojify(':beers: create or edit tag'))
   .option('-e, --edit', 'edit tag')
   .addHelpText('after', `
 ${chalk.bgGreen.bold.italic(' Example ')}
@@ -32,10 +33,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
       if (!tags.length) {
         return logger('error', `Your tag list is empty`);
       }
-      const message = tags.map((tag: Tag) => emoji.emojify(`:label: ${tag.name}`)).join(' ');
-      console.log();
-      console.log(message);
-      console.log();
+      Print.Tags(tags.filter((t: Tag) => t.active));
       return;
     }
 
@@ -55,7 +53,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
 
     // create tag
     if (TagController.isExist(tagName)) {
-      return logger('error', `Tag '${tagName}' already exists`);
+      return logger('error', `Tag ${chalk.greenBright.bold.underline(tagName)} already exists`);
     }
     TagController.create(tagName);
     logger('success', `Success, you can enter ${chalk.greenBright.underline('st t')} to view all tags`);

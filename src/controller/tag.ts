@@ -16,33 +16,27 @@ class TagController {
 
   public toggle(name: string, active: boolean) {
     const tags = this.get();
-    const [rest, tag] = tags.reduce<[Tag[], Tag | undefined]>((rest, tag) => (
-      tag.name === name ? [rest[0].concat(tag), rest[1]] : [rest[0], tag]
-    ), [[], undefined]);
-    tag!.active = active;
-    Database.write('tags', rest.concat(tag!));
+    tags.forEach(t => t.name === name && (t.active = active));
+    Database.write('tags', tags);
   }
 
   public create(name: string) {
     const tags = this.get();
-    Database.write('tags', tags.concat({ id: tags.length + 1, name, active: true }));
+    const tag = { id: tags.length + 1, name, active: true };
+    Database.write('tags', tags.unshift(tag));
+    return tag;
   }
 
   public update(before: string, after: string) {
-    const [tag] = this.get(before);
-    const tags = this.get()
-      .filter(t => t.name !== before)
-      .concat({ ...tag, name: after });
+    const tags = this.get();
+    tags.forEach(t => t.name === before && (t.name = after));
     Database.write('tags', tags);
   }
 
   public remove(name: string) {
     const tags = this.get();
-    const [rest, tag] = tags.reduce<[Tag[], Tag | undefined]>((rest, tag) => (
-      tag.name === name ? [rest[0].concat(tag), rest[1]] : [rest[0], tag]
-    ), [[], undefined]);
-    tag!.active = false;
-    Database.write('tags', rest.concat(tag!));
+    tags.forEach(t => t.name === name && (t.active = false));
+    Database.write('tags', tags);
   }
 }
 

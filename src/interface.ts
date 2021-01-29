@@ -2,17 +2,30 @@ export interface DatabaseStructure {
   tags: Tag[];
   tasks: Task[];
   groups: Group[];
-  levels: Level[];
 }
 
 export type DatabaseKeys = keyof DatabaseStructure;
 
+export interface Answers {
+  name: string;
+  tag?: number;
+  group?: number;
+  level?: number;
+  tagEnable: boolean;
+  tagName?: string;
+  groupEnable: boolean;
+  groupName?: string;
+  levelEnable: boolean;
+  levelName?: string;
+  description: string;
+}
+
 export interface IncompleteTask {
   name: string;
+  tag?: number;
   group?: number;
-  tags?: number[];
-  level?: number;
-  description: string | undefined;
+  level?: string;
+  description: string;
 }
 
 export interface Task {
@@ -20,15 +33,15 @@ export interface Task {
   name: string;
   group?: number;
   groupName?: string;
-  tags?: number[];
+  tag?: number;
   tagName?: string;
   status: Status;
+  statusName?: string;
   createAt: string;
   updateAt?: string;
   completeAt?: string;
   remindTime?: string;
-  level?: number;
-  levelName?: string;
+  level?: string;
   description: string | undefined;
 }
 
@@ -38,6 +51,8 @@ export enum Status {
   Removed = 0
 }
 
+export type StatusName = Record<'Todo' | 'Done' | 'Removed', string>;
+
 export interface Group {
   id: number;
   name: string;
@@ -45,12 +60,6 @@ export interface Group {
 }
 
 export interface Tag {
-  id: number;
-  name: string;
-  active: boolean;
-}
-
-export interface Level {
   id: number;
   name: string;
   active: boolean;

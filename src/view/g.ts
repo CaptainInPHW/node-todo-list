@@ -14,10 +14,11 @@ const program = new Command();
 // @ts-ignore
 const GroupController = require('../controller/group');
 // @ts-ignore
-const { logger } = require('../utils');
+const { logger, Print } = require('../utils');
 
 program
   .arguments('[group_name]')
+  .description(emoji.emojify(':beers: create or edit group'))
   .option('-e, --edit', 'edit group')
   .addHelpText('after', `
 ${chalk.bgGreen.bold.italic(' Example ')}
@@ -32,10 +33,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
       if (!groups.length) {
         return logger('error', `Your group list is empty`);
       }
-      const message = groups.map((group: Group) => emoji.emojify(`:file_folder: ${group.name}`)).join(' ');
-      console.log();
-      console.log(message);
-      console.log();
+      Print.Groups(groups.filter((g: Group) => g.active));
       return;
     }
 
@@ -55,7 +53,7 @@ ${chalk.bgGreen.bold.italic(' Example ')}
 
     // create group
     if (GroupController.isExist(groupName)) {
-      return logger('error', `Group '${groupName}' already exists`);
+      return logger('error', `Group ${chalk.greenBright.bold.underline(groupName)} already exists`);
     }
     GroupController.create(groupName);
     logger('success', `Success, you can enter ${chalk.greenBright.underline('st g')} to view all groups`);

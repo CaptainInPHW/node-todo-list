@@ -1,4 +1,4 @@
-import { Group, Tag, Task } from './interface';
+import { Tag, Task } from './interface';
 
 // @ts-ignore
 const chalk = require('chalk');
@@ -7,41 +7,39 @@ const emoji = require('node-emoji');
 // @ts-ignore
 const symbols = require('log-symbols');
 
-
 const Print = {
-  Tasks: (tasks: Task[]) => {
-    tasks.forEach((task, index) => {
-      console.log();
-      console.log(emoji.emojify(`  ${task.level ? task.level + ' ' : ''}${chalk.underline.bold(task.name)}  ${emoji.emojify(task.statusName)}`));
-      if (task.description) {
-        console.log();
-        console.log(emoji.emojify(`  ${chalk.dim(task.description)}`));
-      }
-      console.log();
-      let extra: string = '  ';
-      if (task.group) {
-        extra += emoji.emojify(`:file_folder: ${task.groupName}`);
-      }
-      if (task.tag) {
-        extra += ' ' + emoji.emojify(`:label:  ${task.tagName}`);
-      }
-      if (extra.trim()) {
-        console.log(extra);
+  Tasks: (tasks: Task[], verbose?: boolean) => {
+    console.log();
+    if (verbose) {
+      console.log('<------------------------------------------------------------------------------------------->');
+    }
+    for (const task of tasks) {
+      if (verbose) {
         console.log();
       }
-      if (index !== tasks.length - 1) {
-        console.log('--------------------------------------------------------------------------------------------');
+      console.log(`  ${chalk.dim.bold(task.id)}. ${chalk.bold(task.title)} ${emoji.emojify(task.statusName)} ${task.level ? task.level : ''}`);
+      if (verbose) {
+        if (task.description) {
+          console.log();
+          console.log(emoji.emojify(`  ${chalk.dim(task.description)}`));
+        }
+        console.log();
+        let extra: string = '  ';
+        if (task.tagId) {
+          extra += emoji.emojify(`:label:  ${task.tagName}`);
+        }
+        if (extra.trim()) {
+          console.log(extra);
+          console.log();
+        }
+        console.log('<------------------------------------------------------------------------------------------->');
       }
-    });
+    }
+    console.log();
   },
   Tags: (tags: Tag[]) => {
     console.log();
-    console.log(tags.map(t => emoji.emojify(`:label: ${t.name}`)));
-    console.log();
-  },
-  Groups: (groups: Group[]) => {
-    console.log();
-    console.log(groups.map(g => emoji.emojify(`:file_folder: ${g.name}`)));
+    tags.filter(tag => tag.active).forEach(tag => console.log(emoji.emojify(`:label:  ${tag.name}`)));
     console.log();
   }
 };

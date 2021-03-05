@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { Group, Answers, Tag } from './interface';
+import { Answers, Tag } from './interface';
 
 // @ts-ignore
 const chalk = require('chalk');
@@ -10,7 +10,6 @@ const emoji = require('node-emoji');
 const inquirer = require('inquirer');
 // @ts-ignore
 const { program } = require('commander');
-
 // @ts-ignore
 const { Level, logger } = require('./utils');
 // @ts-ignore
@@ -21,24 +20,19 @@ const packageJSON = require('../package.json');
 const TagController = require('./controller/tag');
 // @ts-ignore
 const TaskController = require('./controller/task');
-// @ts-ignore
-const GroupController = require('./controller/group');
 
 Database.initial();
 
 program
   .version(packageJSON.version)
-  .description(emoji.emojify(':beers: A simple command line to-do list tool.'))
-  .command('l', 'list tasks', { executableFile: 'view/l' })
-  .command('t', 'list tags, or create tag', { executableFile: 'view/t' })
-  .command('g', 'list groups, or create group', { executableFile: 'view/g' })
-  .command('d', 'delete task or tag or group', { executableFile: 'view/d' });
-
-program
-  .arguments('[task_name]')
-  .option('-c, --complete', 'complete a task')
-  .action((taskName: string, opts: { complete: boolean }) => opts.complete ? completeTask(taskName) : createTask())
-;
+  .allowExcessArguments(false)
+  .allowUnknownOption(false)
+  .description(emoji.emojify(':beers: A simple command line To-do list tool.'))
+  .command('ls', 'list task', { executableFile: 'view/ls' })
+  .command('tag', 'list all tags', { executableFile: 'view/tag' })
+  .command('del', 'delete a task', { executableFile: 'view/del' })
+  .command('done', 'complete a task', { executableFile: 'view/done' })
+  .action(createTask);
 
 program.parse(process.argv);
 
@@ -46,7 +40,7 @@ function createTask() {
   inquirer.prompt([
     {
       type: 'input',
-      name: 'name',
+      name: 'title',
       message: 'title',
       filter: (input: string) => input.trim(),
       validate: (input: string) => !!input || Promise.reject('task title is required!')
@@ -69,7 +63,7 @@ function createTask() {
       loop: false,
       message: 'select a level',
       choices: [Level.High, Level.Middle, Level.Low],
-      when: (answers: { levelEnable: boolean }) => answers.levelEnable
+      when: (answers: Answers) => answers.levelEnable
     },
     {
       type: 'confirm',
@@ -79,11 +73,11 @@ function createTask() {
     },
     {
       type: 'list',
-      name: 'tag',
+      name: 'tagId',
       loop: false,
       pageSize: 10,
+      when: (answers: Answers) => answers.tagEnable,
       message: `select or create a tag ${chalk.dim('(the last option)')}`,
-      when: (answers: { tagEnable: boolean }) => answers.tagEnable,
       choices: () => {
         return TagController.get()
           .filter((t: Tag) => t.active)
@@ -97,46 +91,27 @@ function createTask() {
       name: 'tagName',
       message: 'tag name',
       filter: (input: string) => input.trim(),
-      when: (answers: { tag: number }) => answers.tag === 0,
+      when: (answers: Answers) => answers.tagId === 0,
       validate: (input: string) => !!input || Promise.reject('tag name is required!')
-    },
-    {
-      type: 'confirm',
-      name: 'groupEnable',
-      default: false,
-      message: `add a group ${chalk.dim(`(Press ${chalk.greenBright.bold('Enter')} to skip)`)}`
-    },
-    {
-      type: 'list',
-      name: 'group',
-      loop: false,
-      pageSize: 10,
-      message: `select or create a group ${chalk.dim('(the last option)')}`,
-      when: (answers: { groupEnable: boolean }) => answers.groupEnable,
-      choices: () => {
-        return GroupController.get()
-          .filter((g: Group) => g.active)
-          .map((g: Group) => ({ name: g.name, value: g.id }))
-          .concat(new inquirer.Separator())
-          .concat({ value: 0, name: emoji.emojify(':sparkles: create a new group'), short: 'create a new group' });
-      }
-    },
-    {
-      type: 'input',
-      name: 'groupName',
-      message: 'group name',
-      filter: (input: string) => input.trim(),
-      when: (answers: { group: number }) => answers.group === 0,
-      validate: (input: string) => !!input || Promise.reject('group name is required!')
     }
   ]).then((answers: Answers) => {
-    const tag = answers.tagEnable ? (answers.tag || TagController.create(answers.tagName).id) : undefined;
-    const group = answers.groupEnable ? (answers.group || GroupController.create(answers.groupName).id) : undefined;
-    TaskController.create({ tag, group, level: answers.level, name: answers.name, description: answers.description });
-    logger('success', `Success, you can enter ${chalk.greenBright.underline('st l')} to view all tasks`);
+    let tagId = undefined;
+    if (answers.tagEnable && answers.tagId) {
+      tagId = answers.tagId;
+    } else {
+      try {
+        const newTag = TagController.create(answers.tagName);
+        tagId = newTag.id;
+      } catch (error) {
+        return logger('error', error.message);
+      }
+    }
+    const task = TaskController.create({
+      tagId,
+      level: answers.level,
+      title: answers.title,
+      description: answers.description
+    });
+    logger('success', `Success, the id of new task is ${chalk.greenBright.underline(task.id)}.`);
   });
-}
-
-function completeTask(taskName?: string) {
-  console.log(taskName);
 }

@@ -1,14 +1,13 @@
-import { Group, IncompleteTask, Status, StatusName, Tag, Task } from '../interface';
+import { IncompleteTask, Status, StatusName, Tag, Task } from '../interface';
 
 // @ts-ignore
 const chalk = require('chalk');
-
 //@ts-ignore
 const Database = require('../model/database');
 
 const StatusName: StatusName = {
-  Todo: chalk.yellowBright.bold('Todo'),
-  Done: chalk.greenBright.bold('Done'),
+  Todo: chalk.yellow.bold('Todo'),
+  Done: chalk.green.bold('Done'),
   Removed: chalk.gray.strikethrough('Deleted')
 };
 
@@ -19,19 +18,16 @@ class TaskController {
 
   static complement(tasks: Task[]): Task[] {
     const tags = Database.read('tags') as Tag[];
-    const groups = Database.read('groups') as Group[];
     return tasks.map(task => ({
       ...task,
       statusName: StatusName[Status[task.status] as keyof StatusName],
-      tagName: task.tag ? tags.find(tag => tag.id === task.tag)!.name : undefined,
-      groupName: task.group ? groups.find(group => group.id === task.group)!.name : undefined
+      tagName: task.tagId ? tags.find(tag => tag.id === task.tagId)!.name : undefined
     }));
   }
 
   public get(id?: number): Task[] {
     const tasks = Database.read('tasks') as Task[];
-    // TODO: try Number(id)
-    return TaskController.complement(id ? tasks.filter(task => task.id === Number(id)) : tasks);
+    return TaskController.complement(id ? tasks.filter(task => task.id === id) : tasks);
   }
 
   public getByStatus(status: Status): Task[] {
@@ -39,19 +35,11 @@ class TaskController {
     return TaskController.complement(tasks.filter(item => item.status === status));
   }
 
-  public getByTag(tag: number, all?: boolean): Task[] {
+  public getByTag(tagId: number, all?: boolean): Task[] {
     const tasks = this.get();
     return TaskController.complement(all
-      ? tasks.filter(item => item.group === tag)
-      : tasks.filter(item => item.group === tag && item.status === Status.Todo)
-    );
-  }
-
-  public getByGroup(group: number, all?: boolean): Task[] {
-    const tasks = this.get();
-    return TaskController.complement(all
-      ? tasks.filter(item => item.group === group)
-      : tasks.filter(item => item.group === group && item.status === Status.Todo)
+      ? tasks.filter(item => item.tagId === tagId)
+      : tasks.filter(item => item.tagId === tagId && item.status === Status.Todo)
     );
   }
 
@@ -63,40 +51,43 @@ class TaskController {
     );
   }
 
-  public create(task: IncompleteTask) {
+  public create(incompleteTask: IncompleteTask) {
     const tasks = this.get();
     const date = TaskController.getCurrentTime();
-    tasks.unshift({
-      ...task,
+    const task = {
+      ...incompleteTask,
       createAt: date,
       updateAt: date,
       status: Status.Todo,
       id: tasks.length + 1
-    });
+    };
+    tasks.push(task);
     Database.write('tasks', tasks);
+    return task;
   }
 
   public update(task: Task) {
     task.updateAt = TaskController.getCurrentTime();
-    const tasks = this.get()
-      .filter(t => t.id !== task.id)
-      .unshift(task);
-    Database.write('tasks', tasks);
+    const tasks = this.get().filter(t => t.id !== task.id);
+    Database.write('tasks', tasks.concat(task));
   }
 
   public complete(id: number) {
     const [task] = this.get(id);
+    if ([Status.Removed, Status.Done].includes(task.status)) {
+      throw new Error(`The task with id ${chalk.green.bold(id)} has been completed or removed`);
+    }
     task.status = Status.Done;
     task.completeAt = TaskController.getCurrentTime();
-    const tasks = this.get().filter(t => t.id !== id).unshift(task);
-    Database.write('tasks', tasks);
+    const tasks = this.get().filter(t => t.id !== id);
+    Database.write('tasks', tasks.concat(task));
   }
 
   public remove(id: number) {
     const [task] = this.get(id);
     task.status = Status.Removed;
-    const tasks = this.get().filter(t => t.id !== id).unshift(task);
-    Database.write('tasks', tasks);
+    const tasks = this.get().filter(t => t.id !== id);
+    Database.write('tasks', tasks.concat(task));
   }
 }
 

@@ -1,6 +1,7 @@
 import { Tag } from '../interface';
 
-//@ts-ignore
+const chalk = require('chalk');
+
 const Database = require('../model/database');
 
 class TagController {
@@ -14,16 +15,25 @@ class TagController {
     return !!tag;
   }
 
-  public toggle(name: string, active: boolean) {
+  public create(name: string): Tag {
     const tags = this.get();
-    tags.forEach(t => t.name === name && (t.active = active));
-    Database.write('tags', tags);
-  }
+    let tag = tags.find(tag => tag.name === name);
 
-  public create(name: string) {
-    const tags = this.get();
-    const tag = { id: tags.length + 1, name, active: true };
-    Database.write('tags', tags.unshift(tag));
+    if (tag) {
+      // throw an error when tag is exist and active
+      if (tag.active) {
+        throw new Error(`Tag ${chalk.greenBright.bold(tag.name)} is already exist.`);
+      }
+
+      // otherwise active the tag
+      tags.forEach(tag => tag.name === name && (tag.active = true));
+      Database.write('tags', tags);
+      return tag;
+    }
+
+    // create a new tag
+    tag = { id: tags.length + 1, name, active: true };
+    Database.write('tags', tags.concat(tag));
     return tag;
   }
 

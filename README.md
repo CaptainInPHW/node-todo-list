@@ -32,11 +32,11 @@ st ls
 # list all tasks with detail information
 st ls -av
 
-# select a task or input the id of task to complete
-st done [task_id]
+# enter the id of task to complete
+st done <task_id>
 
-# select a task or input the id of task to delete 
-st del [task_id]
+# enter the id of task to delete
+st del <task_id>
 ```
 
 ### Tag

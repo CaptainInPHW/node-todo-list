@@ -1,5 +1,3 @@
-import { Tag } from '../interface';
-
 // @ts-ignore
 const chalk = require('chalk');
 // @ts-ignore
@@ -16,29 +14,37 @@ const TagController = require('../controller/tag');
 // @ts-ignore
 const { logger, Print } = require('../utils');
 
+// @ts-ignore
+const text = `
+${chalk.bgGreen.bold.italic(' Example ')}
+  $ ${chalk.greenBright('st')} tag
+  $ ${chalk.greenBright('st')} tag ${chalk.underline.bold('shopping')}
+  $ ${chalk.greenBright('st')} tag -e ${chalk.underline.bold('skill')}
+  $ ${chalk.greenBright('st')} tag del ${chalk.underline.bold('skill')}
+`;
+
 program
   .arguments('[tag_name]')
-  .description(emoji.emojify(':beers: create or edit tag'))
+  .addHelpText('after', text)
+  .description(
+    emoji.emojify(':beers: create or edit tag'),
+    { tagName: 'name of the tag you want to edit' }
+  )
   .option('-e, --edit', 'edit tag')
-  .addHelpText('after', `
-${chalk.bgGreen.bold.italic(' Example ')}
-  $ ${chalk.greenBright('st')} t
-  $ ${chalk.greenBright('st')} t ${chalk.underline.bold('shopping')}
-  $ ${chalk.greenBright('st')} t -e ${chalk.underline.bold('skill')}
-  `)
+  .command('del', 'delete a tag', { executableFile: 'view/tag-del' })
   .action((tagName: string, opts: { edit?: boolean }) => {
     // list all tags
-    if (!tagName) {
+    if (!opts.edit && !tagName) {
       const tags = TagController.get();
       if (!tags.length) {
         return logger('error', `Your tag list is empty`);
       }
-      Print.Tags(tags.filter((t: Tag) => t.active));
+      Print.Tags(tags);
       return;
     }
 
     // edit tag
-    if (opts.edit) {
+    if (opts.edit && tagName) {
       return inquirer.prompt([{
         name: 'name',
         type: 'input',
@@ -47,16 +53,20 @@ ${chalk.bgGreen.bold.italic(' Example ')}
         validate: (input: string) => !!input || Promise.reject('tag name is required!')
       }]).then((answers: { name: string }) => {
         TagController.update(tagName, answers.name);
-        logger('success', `Success, you can type ${chalk.greenBright.underline('st t')} to view all tags`);
+        logger('success', `Success, you can type ${chalk.greenBright('st tag')} to view all tags`);
       });
+    }
+
+    if (opts.edit && !tagName) {
+      return logger('info', 'Maybe you should provide a tag name?');
     }
 
     // create tag
     if (TagController.isExist(tagName)) {
-      return logger('error', `Tag ${chalk.greenBright.bold.underline(tagName)} already exists`);
+      return logger('error', `Tag ${chalk.greenBright(tagName)} already exists`);
     }
     TagController.create(tagName);
-    logger('success', `Success, you can enter ${chalk.greenBright.underline('st t')} to view all tags`);
+    logger('success', `Success, you can enter ${chalk.greenBright('st tag')} to view all tags`);
   });
 
 program.parse(process.argv);

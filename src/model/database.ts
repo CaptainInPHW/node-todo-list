@@ -7,7 +7,7 @@ const packageJson = require('../../package.json');
 
 const dbPath = path.join(os.homedir(), packageJson.dbName);
 
-const initial: DatabaseStructure = { tags: [], tasks: [], groups: [] };
+const initial: DatabaseStructure = { tags: [], tasks: [] };
 
 class Database {
   initial() {

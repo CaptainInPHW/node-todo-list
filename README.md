@@ -25,38 +25,34 @@ After installation, you can use `st` as a global command.
 ```shell
 # add a task
 st
+
 # list tasks under TODO status
-st l
+st ls
+
 # list all tasks with detail information
-st l -av
-# select a task to delete 
-st d
+st ls -av
+
+# select a task or input the id of task to complete
+st done [task_id]
+
+# select a task or input the id of task to delete 
+st del [task_id]
 ```
 
 ### Tag
 
 ```shell
 # list all tags
-st t
+st tag
+
 # add a tag
-st t <tag_name>
+st tag <tag_name>
+
 # edit a tag
-st t -e <tag_name>
+st tag -e <tag_name>
+
 # delete a tag
-st d t <tag_name>
-```
-
-### Group
-
-```shell
-# list all groups
-st g
-# add a group
-st g <group_name>
-# edit a group
-st g -e <group_name>
-# delete a group
-st d g <group_name>
+st tag del <tag_name>
 ```
 
 ### Todo

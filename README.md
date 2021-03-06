@@ -1,5 +1,7 @@
 # Simple To-do
 
+![build passing](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
+
 🛠 A simple command line To-do list tool.
 
 ## Installation
@@ -54,12 +56,6 @@ st tag -e <tag_name>
 # delete a tag
 st tag del <tag_name>
 ```
-
-### Todo
-
-- 完成任务
-- 重复添加相同的任务项时，提示重复
-- 记录添加任务的时间戳
 
 ## Licence
 

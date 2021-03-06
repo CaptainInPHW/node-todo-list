@@ -1,0 +1,47 @@
+{
+  "name": "simple-todo",
+  "version": "1.0.0",
+  "description": "A simple command line Todo-list tool",
+  "main": "lib/index.js",
+  "bin": {
+    "st": "lib/index.js"
+  },
+  "dbName": ".simple-todo.db",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^7.0.0",
+    "inquirer": "^7.3.3",
+    "inquirer-search-list": "^1.2.6",
+    "log-symbols": "^4.0.0",
+    "node-emoji": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^7.3.1",
+    "@types/node": "^14.14.22",
+    "@types/node-emoji": "^1.8.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
+  },
+  "scripts": {
+    "publish:local": "tsc && sudo npm link",
+    "publish:npm": "npm publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CaptainOfPhB/simple-todo.git"
+  },
+  "keywords": [
+    "todo",
+    "todo-list",
+    "node-todo"
+  ],
+  "author": "CaptainOfPhB",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CaptainOfPhB/simple-todo/issues"
+  },
+  "homepage": "https://github.com/CaptainOfPhB/simple-todo#readme"
+}

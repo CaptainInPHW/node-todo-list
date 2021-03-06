@@ -1,25 +1,62 @@
-# node-todo-list
+# Simple To-do
 
-### Usage
+![build passing](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
 
-- add: 添加任务。例如 `node todo add 学习Node.js`
-- edit: 编辑任务。例如 `node todo edit 学习Node.js 学习JavaScript`
-- done: 完成任务。例如 `node todo done 学习Node.js`
-- delete: 删除任务。例如 `node todo delete 学习JavaScript`
+🛠 A simple command line To-do list tool.
 
-### Feature
+## Installation
 
-- 查看任务
-- 添加任务
-- 更新任务
-- 删除任务
-- 完成任务
+Using `npm`:
 
-### Todo
+```shell
+npm install -g simple-toto
+```
 
-- 重复添加相同的任务项时，提示重复
-- 记录添加任务的时间戳
+Using `yarn`:
+
+```shell
+yarn global add simple-toto
+```
+
+## Usage
+
+After installation, you can use `st` as a global command.
+
+### Task
+
+```shell
+# add a task
+st
+
+# list tasks under TODO status
+st ls
+
+# list all tasks with detail information
+st ls -av
+
+# enter the id of task to complete
+st done <task_id>
+
+# enter the id of task to delete
+st del <task_id>
+```
+
+### Tag
+
+```shell
+# list all tags
+st tag
+
+# add a tag
+st tag <tag_name>
+
+# edit a tag
+st tag -e <tag_name>
+
+# delete a tag
+st tag del <tag_name>
+```
 
 ## Licence
 
-MIT
+MIT (please give me a star ✨)

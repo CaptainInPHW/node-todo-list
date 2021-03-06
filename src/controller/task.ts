@@ -75,7 +75,7 @@ class TaskController {
   public complete(id: number) {
     const [task] = this.get(id);
     if ([Status.Removed, Status.Done].includes(task.status)) {
-      throw new Error(`The task with id ${chalk.green.bold(id)} has been completed or removed`);
+      throw new Error(`The task with id ${chalk.green(id)} has been completed or removed`);
     }
     task.status = Status.Done;
     task.completeAt = TaskController.getCurrentTime();

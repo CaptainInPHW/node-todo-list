@@ -15,10 +15,10 @@ const { Print, logger } = require('../utils');
 const TaskController = require('../controller/task');
 
 const text = `
-${chalk.bgGreen.bold.italic(' Example call ')}
+${chalk.bgGreen.bold(' Example call ')}
 
-  $ ${chalk.greenBright('st')} ls
-  $ ${chalk.greenBright('st')} ls -av
+  $ ${chalk.green('st')} ls
+  $ ${chalk.green('st')} ls -av
 `;
 
 program

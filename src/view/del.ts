@@ -13,9 +13,9 @@ const program = new Command();
 
 // @ts-ignore
 const text = `
-${chalk.bgGreen.bold.italic(' Example call ')}
+${chalk.bgGreen.bold(' Example call ')}
 
-  $ ${chalk.greenBright('st')} del 123
+  $ ${chalk.green('st')} del 123
 `;
 
 program
@@ -31,7 +31,7 @@ program
       return logger('error', 'You must enter a numeric id.');
     }
     if (!TaskController.get(id).length) {
-      return logger('error', `The task with id ${chalk.green.bold(taskId)} does not exist`);
+      return logger('error', `The task with id ${chalk.green(taskId)} does not exist`);
     }
     TaskController.remove(id);
     logger('success', 'You have removed a task');

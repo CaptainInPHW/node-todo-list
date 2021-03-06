@@ -55,7 +55,7 @@ function createTask() {
       type: 'confirm',
       name: 'levelEnable',
       default: false,
-      message: `add a level ${chalk.dim(`(Press ${chalk.greenBright.bold('Enter')} to skip)`)}`
+      message: `add a level ${chalk.dim(`(Press ${chalk.green('Enter')} to skip)`)}`
     },
     {
       type: 'list',
@@ -69,7 +69,7 @@ function createTask() {
       type: 'confirm',
       name: 'tagEnable',
       default: false,
-      message: `add a tag ${chalk.dim(`(Press ${chalk.greenBright.bold('Enter')} to skip)`)}`
+      message: `add a tag ${chalk.dim(`(Press ${chalk.green('Enter')} to skip)`)}`
     },
     {
       type: 'list',
@@ -112,6 +112,6 @@ function createTask() {
       title: answers.title,
       description: answers.description
     });
-    logger('success', `Success, the id of new task is ${chalk.greenBright.underline(task.id)}.`);
+    logger('success', `Success, the id of new task is ${chalk.green(task.id)}.`);
   });
 }

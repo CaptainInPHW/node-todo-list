@@ -1,7 +1,7 @@
 {
   "name": "simple-todo",
   "version": "1.0.0",
-  "description": "A command line todo-list tool",
+  "description": "A simple command line Todo-list tool",
   "main": "lib/index.js",
   "bin": {
     "st": "lib/index.js"
@@ -39,7 +39,7 @@
     "node-todo"
   ],
   "author": "CaptainOfPhB",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/CaptainOfPhB/simple-todo/issues"
   },

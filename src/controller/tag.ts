@@ -22,7 +22,7 @@ class TagController {
     if (tag) {
       // throw an error when tag is exist and active
       if (tag.active) {
-        throw new Error(`Tag ${chalk.greenBright.bold(tag.name)} is already exist.`);
+        throw new Error(`Tag ${chalk.green(tag.name)} is already exist.`);
       }
 
       // otherwise active the tag

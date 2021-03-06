@@ -16,11 +16,11 @@ const { logger, Print } = require('../utils');
 
 // @ts-ignore
 const text = `
-${chalk.bgGreen.bold.italic(' Example ')}
-  $ ${chalk.greenBright('st')} tag
-  $ ${chalk.greenBright('st')} tag ${chalk.underline.bold('shopping')}
-  $ ${chalk.greenBright('st')} tag -e ${chalk.underline.bold('skill')}
-  $ ${chalk.greenBright('st')} tag del ${chalk.underline.bold('skill')}
+${chalk.bgGreen.bold(' Example call ')}
+  $ ${chalk.green('st')} tag
+  $ ${chalk.green('st')} tag shopping
+  $ ${chalk.green('st')} tag -e skill
+  $ ${chalk.green('st')} tag del skill
 `;
 
 program
@@ -31,7 +31,7 @@ program
     { tagName: 'name of the tag you want to edit' }
   )
   .option('-e, --edit', 'edit tag')
-  .command('del', 'delete a tag', { executableFile: 'view/tag-del' })
+  .command('del', 'delete a tag', { executableFile: 'tag-del' })
   .action((tagName: string, opts: { edit?: boolean }) => {
     // list all tags
     if (!opts.edit && !tagName) {
@@ -53,7 +53,7 @@ program
         validate: (input: string) => !!input || Promise.reject('tag name is required!')
       }]).then((answers: { name: string }) => {
         TagController.update(tagName, answers.name);
-        logger('success', `Success, you can type ${chalk.greenBright('st tag')} to view all tags`);
+        logger('success', `Success, you can type ${chalk.green('st tag')} to view all tags`);
       });
     }
 
@@ -63,10 +63,10 @@ program
 
     // create tag
     if (TagController.isExist(tagName)) {
-      return logger('error', `Tag ${chalk.greenBright(tagName)} already exists`);
+      return logger('error', `Tag ${chalk.green(tagName)} already exists`);
     }
     TagController.create(tagName);
-    logger('success', `Success, you can enter ${chalk.greenBright('st tag')} to view all tags`);
+    logger('success', `Success, you can enter ${chalk.green('st tag')} to view all tags`);
   });
 
 program.parse(process.argv);

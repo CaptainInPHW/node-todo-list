@@ -9,13 +9,13 @@
 Using `npm`:
 
 ```shell
-npm install -g simple-toto
+npm install -g simple-todo
 ```
 
 Using `yarn`:
 
 ```shell
-yarn global add simple-toto
+yarn global add simple-todo
 ```
 
 ## Usage
@@ -59,4 +59,4 @@ st tag del <tag_name>
 
 ## Licence
 
-MIT (please give me a star ✨)
+MIT
